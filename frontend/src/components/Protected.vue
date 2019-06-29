@@ -17,7 +17,7 @@
 </template>
 
 <script>
-  import api from './backend-api'
+  import api from '../api'
   import store from './../store'
 
 export default {
