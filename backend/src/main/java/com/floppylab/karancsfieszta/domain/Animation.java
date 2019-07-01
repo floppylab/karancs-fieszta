@@ -1,5 +1,6 @@
 package com.floppylab.karancsfieszta.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedBy;
@@ -38,12 +39,14 @@ public class Animation {
     @Column(nullable = true)
     protected Set<String> hearts = new HashSet();
 
+    @JsonFormat(pattern = "yyyy. MM. dd")
     @CreatedDate
     private Date creationDate;
 
     @CreatedBy
     private String createdBy;
 
+    @JsonFormat(pattern = "yyyy. MM. dd")
     @LastModifiedDate
     private Date lastModificationDate;
 

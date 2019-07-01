@@ -9,9 +9,12 @@ export default new Vuex.Store({
     username: null
   },
   mutations: {
-    loginSuccess(state, payload) {
+    loginSuccess (state, payload) {
       state.loginSuccess = true
       state.username = payload.username
+    },
+    logout (state) {
+      state.username = null
     }
   },
   actions: {
@@ -22,7 +25,10 @@ export default new Vuex.Store({
             console.log(response)
             console.log("response: '" + response + "' with statuscode " + response.status)
             if (response.status == 200) {
-              api.defaults.headers.common['Authorization'] = `Bearer ${response.headers.authorization}`
+              api.defaults.headers.common['Authorization'] = response.headers.authorization
+              console.log(api.defaults.headers.common['Authorization'])
+              window.$cookies.set("karancs-fieszta-token", response.headers.authorization, '10d')
+              window.$cookies.set("karancs-fieszta-user", username, '10d')
               commit('loginSuccess', {
                 username: username
               })

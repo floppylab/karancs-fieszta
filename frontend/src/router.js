@@ -7,33 +7,40 @@ import Router from 'vue-router'
 
 import Home from '@/views/Home'
 import Login from '@/views/Login'
+import Registration from '@/views/Registration'
 import Editor from '@/views/Editor'
+
+import {api} from './api'
 
 import store from './store'
 
 Vue.use(Router);
 
 const router = new Router({
-  mode: 'history', // uris without hashes #, see https://router.vuejs.org/guide/essentials/history-mode.html#html5-history-mode
+  mode: 'history',
   routes: [
     {
       path: '/',
-      name: 'home',
+      name: 'Home',
       component: Home
     },
     {
       path: '/login',
-      name: 'login',
+      name: 'Login',
       component: Login
     },
-    // {path: '/callservice', component: Service},
-    // {path: '/bootstrap', component: Bootstrap},
-    // {path: '/user', component: User},
-    // {path: '/login', component: Login},
+    {
+      path: '/registration',
+      name: 'Registration',
+      component: Registration
+    },
     {
       path: '/editor',
-      name: 'editor',
-      component: Editor
+      name: 'Editor',
+      component: Editor,
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: '*',
@@ -43,9 +50,19 @@ const router = new Router({
 });
 
 router.beforeEach((to, from, next) => {
+  if (window.$cookies.get("karancs-fieszta-token")) {
+    api.defaults.headers.common['Authorization'] = `${window.$cookies.get("karancs-fieszta-token")}`
+    store.commit('loginSuccess', {
+      username: window.$cookies.get("karancs-fieszta-user")
+    })
+  } else {
+    api.defaults.headers.common['Authorization'] = ''
+    store.commit('logout')
+    window.$cookies.remove("karancs-fieszta-token")
+    window.$cookies.remove("karancs-fieszta-user")
+  }
+
   if (to.matched.some(record => record.meta.requiresAuth)) {
-    // this route requires auth, check if logged in
-    // if not, redirect to login page.
     if (!store.getters.isLoggedIn) {
       next({
         path: '/login'

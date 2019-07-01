@@ -10,12 +10,12 @@ export function stringifyAnimation(animation) {
     }
     str += '\n'
   })
-  return str
+  return str.trim()
 }
 
 export function parseAnimation(str) {
   let animation = []
-  let frames = str.split('\n\n')
+  let frames = str.trim().split('\n\n')
   frames.forEach(frameStr => {
     let frame = {
       time: null,

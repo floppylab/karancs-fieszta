@@ -10,6 +10,7 @@ import javax.persistence.*;
 import java.util.Arrays;
 import java.util.Collection;
 
+@Data
 @Entity
 @NoArgsConstructor
 public class ApplicationUser implements UserDetails {
@@ -31,16 +32,6 @@ public class ApplicationUser implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Arrays.asList(new SimpleGrantedAuthority("USER"));
-    }
-
-    @Override
-    public String getPassword() {
-        return password;
-    }
-
-    @Override
-    public String getUsername() {
-        return username;
     }
 
     @Override
