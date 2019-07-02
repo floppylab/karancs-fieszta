@@ -3,7 +3,7 @@
         <div id="animations">
             <div class="animation" v-for="animation in animations.content" :key="animation.id">
                 <animation-preview @dblclick.native="heartAnimation(animation)" :animation="animation"
-                                   :class="{ 'pointer-cursor' : loggedIn }"></animation-preview>
+                                   :class="{ 'pointer-cursor' : loggedIn }" :ref="'preview' + animation.id"></animation-preview>
                 <div class="meta">
                     <p @click="heartAnimation(animation)"
                        :class="{ 'pointer-cursor' : loggedIn, 'default-cursor' : owned(animation) }">
@@ -11,15 +11,22 @@
                         {{ animation.hearts.length }}
                     </p>
                     <div>
-                        <p class="pointer-cursor" v-if="owned(animation)">
+                        <p class="pointer-cursor" title="másolás">
+                            <router-link :to="'/editor?copy=' + animation.id">
+                                <font-awesome-icon icon="copy"/>
+                            </router-link>
+                        </p>
+                        <p class="pointer-cursor" v-if="owned(animation)" title="szerkesztés">
                             <router-link :to="'/editor?id=' + animation.id">
                                 <font-awesome-icon icon="pencil-alt"/>
                             </router-link>
                         </p>
-                        <p @click="deleteAnimation(animation)" class="pointer-cursor" v-if="owned(animation)">
+                        <p @click="downloadAnimation(animation)" class="pointer-cursor like-a" title="letöltés gifként">
+                            <font-awesome-icon icon="download"/>
+                        </p>
+                        <p @click="deleteAnimation(animation)" class="pointer-cursor like-a" v-if="owned(animation)" title="törlés">
                             <font-awesome-icon icon="trash-alt"/>
                         </p>
-                        <p v-if="!owned(animation)">{{ animation.createdBy }}</p>
                     </div>
                 </div>
                 <h3>{{ animation.title }}</h3>
@@ -117,6 +124,10 @@
                 this.getAnimations(this.animations.number, this.size)
               }.bind(this))
           }.bind(this))
+      },
+      downloadAnimation: function (animation) {
+        console.log(this.$refs['preview' + animation.id])
+        this.$refs['preview' + animation.id][0].downloadAnimation()
       }
     }
   }
@@ -169,6 +180,14 @@
 
     .default-cursor {
         cursor: default;
+    }
+
+    .like-a {
+        color: #ffd152;
+    }
+
+    .like-a:hover {
+        color: #ffad2d !important;
     }
 
 </style>

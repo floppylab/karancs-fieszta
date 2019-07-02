@@ -10,28 +10,23 @@
             <div>
                 <div class="input-row">
                     <p>
-                        <label>cím:</label>
+                        <label>cím *</label>
                         <input type="text" v-model="title"/>
                     </p>
                 </div>
                 <div class="input-row">
                     <p>
-                        <label>hossz (ms):</label>
+                        <label>hossz (ms) *</label>
                         <input type="number" v-model="frames[current].time" step="500" min="500"/>
                     </p>
                     <p>
-                        <label>animáció:</label>
+                        <label>animáció *</label>
                         <select v-model="frames[current].animation">
                             <option value="cut">nincs</option>
-                            <!--<option value="random">random pixelek</option>-->
-                            <!--<option value="wipe_up">beúszás lentről</option>-->
-                            <!--<option value="wipe_down">beúszás fentről</option>-->
-                            <!--<option value="wipe_left">beúszás jobbról</option>-->
-                            <!--<option value="wipe_right">beúszás balról</option>-->
                         </select>
                     </p>
                 </div>
-                <div>{{ current + 1 }} / {{ frames.length }}</div>
+                <p>{{ current + 1 }} / {{ frames.length }}</p>
                 <div id="hotel" v-if="frames[current].data">
                     <div v-for="(floor, floorIndex) in frames[current].data" :key="floorIndex" class="floor">
                         <div v-for="(room, roomIndex) in floor" :key="roomIndex" class="room">
@@ -50,10 +45,21 @@
         </div>
 
         <div class="button-row">
-            <button @click="removeFrame">törlés</button>
-            <button @click="clearFrame">alapállapot</button>
-            <button @click="addFrame">hozzáadás</button>
-            <button @click="saveAnimation">mentés</button>
+            <span @click="addFrame" class="like-a" title="új hozzáadása">
+                <font-awesome-icon icon="plus" size="2x"/>
+            </span>
+            <span @click="copyPrevious" class="like-a" :class="{ disabled : current < 1 }" title="előző másolása">
+                <font-awesome-icon icon="copy" size="2x"/>
+            </span>
+            <span @click="clearFrame" class="like-a" title="aktuális alapállapotba">
+                <font-awesome-icon icon="sync-alt" size="2x"/>
+            </span>
+            <span @click="removeFrame" class="like-a" title="aktuális törlése" :class="{ disabled : frames.length <= 1 }">
+                <font-awesome-icon icon="trash-alt" size="2x"/>
+            </span>
+            <span @click="saveAnimation" class="like-a" title="mentés" :class="{ disabled : dataMissing }">
+                <font-awesome-icon icon="save" size="2x"/>
+            </span>
         </div>
         <the-footer></the-footer>
     </div>
@@ -90,6 +96,11 @@
         }]
       }
     },
+    computed: {
+      dataMissing () {
+        return this.title.trim().length < 1 || this.frames.any(frame => frame.time < 0 || frame.animation.trim().length < 1)
+      }
+    },
     methods: {
       addFrame() {
         this.frames.splice(this.current + 1, 0, {
@@ -109,6 +120,7 @@
         if (this.frames.length !== 1) this.current++
       },
       removeFrame() {
+        if (frames.length <= 1) return
         this.frames.splice(this.current, 1)
         if (this.current > 0) this.current--
       },
@@ -142,7 +154,7 @@
             this.$router.push('/')
           })
       },
-      loadAnimation(id) {
+      loadAnimation (id) {
         api.get(`/animations/${id}`)
           .then((response) => {
             console.log(response.data)
@@ -151,11 +163,26 @@
             this.title = response.data.title
             this.frames = parseAnimation(response.data.code)
           })
+      },
+      copyAnimation (id) {
+        api.get(`/animations/${id}`)
+          .then((response) => {
+            console.log(response.data)
+            this.current = 0
+            this.title = response.data.title
+            this.frames = parseAnimation(response.data.code)
+          })
+      },
+      copyPrevious () {
+        if (this.current == 0) return
+        this.frames[this.current].data = JSON.parse(JSON.stringify(this.frames[this.current - 1].data))
       }
     },
     created() {
       if (this.$route.query.id) {
         this.loadAnimation(this.$route.query.id)
+      } else if (this.$route.query.copy) {
+        this.copyAnimation(this.$route.query.copy)
       }
     }
   }
@@ -249,11 +276,14 @@
         justify-content: center;
     }
 
-    .button-row button {
+    .button-row span {
         margin: 10px;
-        min-width: 90px;
-        border: none;
         padding: 4px;
+    }
+
+    .disabled {
+        pointer-events: none;
+        color: #3f3f3f !important;
     }
 
     @media screen and (max-width: 600px) {
@@ -272,6 +302,15 @@
             display: flex;
         }
     }
+
+    .like-a {
+        color: #ffd152;
+    }
+
+    .like-a:hover {
+        color: #ffad2d !important;
+    }
+
     @media screen and (max-width: 900px) {
 
         .room {
