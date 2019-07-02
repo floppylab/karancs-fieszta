@@ -120,7 +120,7 @@
         if (this.frames.length !== 1) this.current++
       },
       removeFrame() {
-        if (frames.length <= 1) return
+        if (this.frames.length <= 1) return
         this.frames.splice(this.current, 1)
         if (this.current > 0) this.current--
       },
