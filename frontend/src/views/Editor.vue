@@ -98,7 +98,7 @@
     },
     computed: {
       dataMissing () {
-        return this.title.trim().length < 1 || this.frames.any(frame => frame.time < 0 || frame.animation.trim().length < 1)
+        return this.title.trim().length < 1 || this.frames.some(frame => frame.time < 0 || frame.animation.trim().length < 1)
       }
     },
     methods: {
