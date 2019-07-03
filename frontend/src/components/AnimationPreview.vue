@@ -43,18 +43,21 @@ export default {
       encoder.setDelay(500)
       encoder.start()
 
-      this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
       let f = 0
       let currentTime = this.parsedAnimation[f].time
       for (let i = 0; i < this.totalTime / 500; i++) {
+        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height)
         let frame = this.parsedAnimation[f]
         this.draw(frame)
         encoder.addFrame(this.context)
+
         if (currentTime < i * 500) {
-          f++
+          if(f + 1 < this.parsedAnimation.length) f++
           currentTime += frame.time
         }
-        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height)
+
+        console.log(this.parsedAnimation.length)
+        console.log(f)
       }
       encoder.finish()
       const toKebabCase = str =>
