@@ -32,7 +32,7 @@ public class Animation {
 
     private String title;
 
-    @Column(length = 4000)
+    @Column(columnDefinition = "text")
     private String code;
 
     @ElementCollection

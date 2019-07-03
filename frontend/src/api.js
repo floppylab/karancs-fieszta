@@ -1,28 +1,18 @@
 import axios from 'axios'
+import router from './router'
 
 export const api = axios.create({
   baseURL: `/api`,
   timeout: 10000
 });
 
-//
-// export default {
-//     hello() {
-//         return AXIOS.get(`/hello`);
-//     },
-//     getUser(userId) {
-//         return AXIOS.get(`/user/` + userId);
-//     },
-//     createUser(firstName, lastName) {
-//         return AXIOS.post(`/user/` + firstName + '/' + lastName);
-//     },
-//     getSecured(user, password) {
-//         return AXIOS.get(`/secured/`,{
-//             auth: {
-//                 username: user,
-//                 password: password
-//             }});
-//     }
-// }
-//
+api.interceptors.response.use(function (response) {
+  return response
+}, function (error) {
+  console.log(error)
+  // if (403 === error.response.status) {
+  //   this.$router.push('/login?accessDenied=true')
+  // }
+  return Promise.reject(error)
+})
 

@@ -33,20 +33,20 @@
             </div>
         </div>
         <div class="pagination">
-            <span @click="getAnimations(0, size)" v-if="!animations.first">
-                <font-awesome-icon icon="angle-double-left" :style="{ color: 'ivory' }"/>
+            <span @click="getAnimations(0, size)" v-if="!animations.first" class="like-a pointer-cursor">
+                <font-awesome-icon icon="angle-double-left"/>
             </span>
-            <span @click="getAnimations(animations.number - 1, size)" v-if="!animations.first">
-                <font-awesome-icon icon="angle-left" :style="{ color: 'ivory' }"/>
+            <span @click="getAnimations(animations.number - 1, size)" v-if="!animations.first" class="like-a pointer-cursor">
+                <font-awesome-icon icon="angle-left"/>
             </span>
-            <span @click="getAnimations(animations.number - 1, size)" v-if="!animations.first">{{ animations.number  }}</span>
+            <span @click="getAnimations(animations.number - 1, size)" v-if="!animations.first" class="like-a pointer-cursor">{{ animations.number  }}</span>
             <span>{{ animations.number + 1 }}</span>
-            <span @click="getAnimations(animations.number + 1, size)" v-if="!animations.last">{{ animations.number + 2 }}</span>
-            <span @click="getAnimations(animations.number + 1, size)" v-if="!animations.last">
-                <font-awesome-icon icon="angle-right" :style="{ color: 'ivory' }"/>
+            <span @click="getAnimations(animations.number + 1, size)" v-if="!animations.last" class="like-a pointer-cursor">{{ animations.number + 2 }}</span>
+            <span @click="getAnimations(animations.number + 1, size)" v-if="!animations.last" class="like-a pointer-cursor">
+                <font-awesome-icon icon="angle-right"/>
             </span>
-            <span @click="getAnimations(animations.totalPages - 1, size)" v-if="!animations.last">
-                <font-awesome-icon icon="angle-double-right" :style="{ color: 'ivory' }"/>
+            <span @click="getAnimations(animations.totalPages - 1, size)" v-if="!animations.last" class="like-a pointer-cursor">
+                <font-awesome-icon icon="angle-double-right"/>
             </span>
         </div>
     </div>

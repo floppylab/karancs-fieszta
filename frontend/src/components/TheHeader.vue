@@ -1,6 +1,6 @@
 <template>
     <header>
-        <h1 id="title">Karancs Fieszta</h1>
+        <h1 id="title" @click="goHome" class="pointer-cursor">Karancs Fieszta</h1>
         <nav>
             <div v-if="loggedIn"><router-link to="/editor">új animáció</router-link></div>
             <div v-if="!loggedIn"><router-link to="/registration">regisztráció</router-link></div>
@@ -17,6 +17,11 @@
     computed: {
       loggedIn () {
         return this.$store.getters.isLoggedIn
+      }
+    },
+    methods: {
+      goHome () {
+        this.$router.push('/')
       }
     }
   }
@@ -52,6 +57,10 @@
         font-family: Barriecito, sans-serif;
         letter-spacing: 1px;
         padding: 20px 0;
+    }
+
+    .pointer-cursor {
+        cursor: pointer;
     }
 
     @media screen and (max-width: 600px) {

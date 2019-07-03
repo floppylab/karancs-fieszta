@@ -18,7 +18,8 @@ import {
   faDownload,
   faSyncAlt,
   faPlus,
-  faSave
+  faSave,
+  faDoorClosed
 } from '@fortawesome/free-solid-svg-icons'
 import {faFacebookSquare} from '@fortawesome/free-brands-svg-icons'
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome'
@@ -50,6 +51,7 @@ library.add(faDownload)
 library.add(faSyncAlt)
 library.add(faPlus)
 library.add(faSave)
+library.add(faDoorClosed)
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 
 Vue.use(BootstrapVue);

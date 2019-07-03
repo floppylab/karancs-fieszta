@@ -7,6 +7,7 @@
             <h2>bejelentkezés</h2>
             <p v-if="isRegistrationSuccessful">sikeres regisztráció! lépjen be!</p>
             <p v-if="isLogoutSuccessful">sikeres kilépés!</p>
+            <p v-if="isAccessDenied">nincs jogosultság!</p>
             <p v-if="error" class="error">hibás adatok!</p>
             <form @submit.prevent="callLogin()">
                 <div>
@@ -18,7 +19,6 @@
                     <input type="password" id="password" v-model="password" required>
                 </div>
                 <button type="submit">bejelentkezés</button>
-
             </form>
         </div>
     </section>
@@ -45,10 +45,13 @@
       },
       isLogoutSuccessful () {
         return this.$route.query.successfulLogout
+      },
+      isAccessDenied () {
+        return this.$route.query.accessDenied
       }
     },
     created() {
-      if(this.isLogoutSuccessful) {
+      if (this.isLogoutSuccessful) {
         this.$store.commit('logout')
         window.$cookies.remove("karancs-fieszta-token")
         window.$cookies.remove("karancs-fieszta-user")

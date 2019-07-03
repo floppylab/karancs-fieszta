@@ -1,10 +1,13 @@
 <template>
-    <div>
+    <div @mousedown="setLeftButtonState" @mouseup="setLeftButtonState">
         <the-header></the-header>
         <div v-if="this.frames.length > 0" class="editor">
-            <div @click="previousFrame">
-                <span v-show="current > 0">
+            <div >
+                <span @click="previousFrame" v-show="current > 0">
                     <font-awesome-icon icon="angle-left" size="2x" :style="{ color: 'ivory' }"/>
+                </span>
+                <span @click="firstFrame" v-show="current > 0">
+                    <font-awesome-icon icon="angle-double-left" size="2x" :style="{ color: 'ivory' }"/>
                 </span>
             </div>
             <div>
@@ -29,7 +32,7 @@
                 <p>{{ current + 1 }} / {{ frames.length }}</p>
                 <div id="hotel" v-if="frames[current].data">
                     <div v-for="(floor, floorIndex) in frames[current].data" :key="floorIndex" class="floor">
-                        <div v-for="(room, roomIndex) in floor" :key="roomIndex" class="room">
+                        <div v-for="(room, roomIndex) in floor" :key="roomIndex" class="room" @mouseover.passive='check(floorIndex, roomIndex)'>
                             <input :id="'r' + floorIndex + roomIndex" type="checkbox"
                                    v-model="frames[current].data[floorIndex][roomIndex]"/>
                             <label :for="'r' + floorIndex + roomIndex"></label>
@@ -37,9 +40,12 @@
                     </div>
                 </div>
             </div>
-            <div @click="nextFrame">
-                <span v-show="current < (frames.length -1)">
+            <div >
+                <span @click="nextFrame" v-show="current < (frames.length -1)">
                     <font-awesome-icon icon="angle-right" size="2x":style="{ color: 'ivory' }"/>
+                </span>
+                <span @click="lastFrame" v-show="current < (frames.length -1)">
+                    <font-awesome-icon icon="angle-double-right" size="2x":style="{ color: 'ivory' }"/>
                 </span>
             </div>
         </div>
@@ -56,6 +62,9 @@
             </span>
             <span @click="removeFrame" class="like-a" title="aktuális törlése" :class="{ disabled : frames.length <= 1 }">
                 <font-awesome-icon icon="trash-alt" size="2x"/>
+            </span>
+            <span @click="closeEditor" class="like-a" title="bezárás mentés nélkül">
+                <font-awesome-icon icon="door-closed" size="2x"/>
             </span>
             <span @click="saveAnimation" class="like-a" title="mentés" :class="{ disabled : dataMissing }">
                 <font-awesome-icon icon="save" size="2x"/>
@@ -93,7 +102,9 @@
             [false, false, false, false, false, false, false, false],
             [false, false, false, false, false, false, false, false]
           ]
-        }]
+        }],
+
+        leftMouseButtonOnlyDown: false
       }
     },
     computed: {
@@ -135,11 +146,28 @@
           [false, false, false, false, false, false, false, false]
         ]
       },
+      check (floor, room) {
+        console.log(this.leftMouseButtonOnlyDown)
+        if (this.leftMouseButtonOnlyDown) {
+          this.frames[this.current].data[floor][room] = !this.frames[this.current].data[floor][room]
+        }
+      },
+      setLeftButtonState (e) {
+        this.leftMouseButtonOnlyDown = e.buttons === undefined
+          ? e.which === 1
+          : (e.buttons & 1) === 1
+      },
       previousFrame() {
         this.current--
       },
       nextFrame() {
         this.current++
+      },
+      firstFrame() {
+        this.current = 0
+      },
+      lastFrame() {
+        this.current = this.frames.length - 1
       },
       saveAnimation() {
         let promise = null
@@ -151,7 +179,15 @@
         promise
           .then((response) => {
             console.log(response)
-            this.$router.push('/')
+            let options = {
+              loader: false,
+              reverse: false,
+              okText: 'rendben!',
+              backdropClose: true
+            }
+            this.$dialog.alert('adatok mentve!', options).then(function(dialog) {
+              console.log('bezárva')
+            })
           })
       },
       loadAnimation (id) {
@@ -176,6 +212,21 @@
       copyPrevious () {
         if (this.current == 0) return
         this.frames[this.current].data = JSON.parse(JSON.stringify(this.frames[this.current - 1].data))
+      },
+      closeEditor () {
+        let options = {
+          html: true,
+          loader: false,
+          reverse: false,
+          okText: 'igen',
+          cancelText: 'nem',
+          backdropClose: true
+        }
+        this.$dialog
+          .confirm('<h2>megerősítés</h2><p>biztosan bezárod?</p><p>a nem mentett adatok elvesznek!</p>', options)
+          .then(function (dialog) {
+            this.$router.push('/')
+          }.bind(this))
       }
     },
     created() {
@@ -238,7 +289,13 @@
     .editor > div:first-child, .editor > div:last-child {
         flex: 1;
         min-width: 50px;
-        justify-content: center;
+        justify-content: space-around;
+        flex-direction: column;
+    }
+
+    .editor > div > span {
+        display: block;
+        margin: 30px 0;
     }
 
     .editor div:not(:first-child):not(:last-child) {
