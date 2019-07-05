@@ -20,7 +20,7 @@
                 <div class="input-row">
                     <p>
                         <label>hossz (ms) *</label>
-                        <input type="number" v-model="frames[current].time" step="500" min="500"/>
+                        <input type="number" v-model="frames[current].time" step="500" min="0"/>
                     </p>
                     <p>
                         <label>animáció *</label>
