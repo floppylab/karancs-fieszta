@@ -25,7 +25,9 @@
                     <p>
                         <label>animáció *</label>
                         <select v-model="frames[current].animation">
-                            <option value="cut">nincs</option>
+                            <option value="random">mozaikszerű</option>
+                            <option value="topdown">fentről le</option>
+                            <option value="bottomup">lentről fel</option>
                         </select>
                     </p>
                 </div>
@@ -91,7 +93,7 @@
         title: '',
         frames: [{
           time: 1000,
-          animation: 'cut',
+          animation: 'bottomup',
           // data: new Array(7).fill(new Array(8).fill(false))
           data: [
             [false, false, false, false, false, false, false, false],

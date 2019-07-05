@@ -31,10 +31,27 @@ export default {
       return this.$moment(this.totalTime).format('mm:ss:SS')
     },
     totalTime () {
-      return this.parsedAnimation.reduce((total, frame) => total + frame.time, 0)
+      let frameTimes = this.parsedAnimation.reduce((total, frame) => total + frame.time, 0)
+      // console.log(frameTimes)
+      let animationTimes = [].concat.apply([], this.parsedAnimation[0].data).filter(v => v).length  * 1500
+      for(let i = 1; i <this.parsedAnimation.length; i++) {
+        let numberOfDiffs = this.diff(this.parsedAnimation[i-1], this.parsedAnimation[i])
+        animationTimes += numberOfDiffs * 1500
+      }
+      // console.log(animationTimes)
+      return frameTimes + animationTimes;
     }
   },
   methods: {
+    diff: function (from, to) {
+      let count = 0
+      for (let m = 0; m < from.data.length; m++) {
+        for (let n = 0; n < from.data[m].length; n++) {
+            if (from.data[m][n] != to.data[m][n]) count++
+        }
+      }
+      return count
+    },
     downloadAnimation: async function () {
       console.log('called')
       console.log(this.totalTime / 500)
@@ -44,7 +61,8 @@ export default {
       encoder.start()
 
       let f = 0
-      let currentTime = this.parsedAnimation[f].time
+      let currentTime = this.diff(this.previousFrame(0), this.parsedAnimation[0]) * 1500
+      console.log(currentTime)
       for (let i = 0; i < this.totalTime / 500; i++) {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height)
         let frame = this.parsedAnimation[f]
@@ -53,7 +71,8 @@ export default {
 
         if (currentTime < i * 500) {
           if(f + 1 < this.parsedAnimation.length) f++
-          currentTime += frame.time
+          let waitTime = frame.time + this.diff(this.previousFrame(f), frame) * 1500
+          currentTime += waitTime
         }
 
         console.log(this.parsedAnimation.length)
@@ -82,6 +101,10 @@ export default {
           }
         }
       }
+    },
+    previousFrame: function (i) {
+      if (i == 0) return {data: new Array(7).fill(new Array(8).fill(false))}
+      return this.parsedAnimation[(i - 1) % this.parsedAnimation.length]
     }
   },
   async mounted() {
@@ -100,7 +123,8 @@ export default {
     while (true) {
       let frame = this.parsedAnimation[i]
       this.draw(frame)
-      await new Promise(resolve => setTimeout(resolve, frame.time));
+      let waitTime = frame.time + this.diff(this.previousFrame(i), frame) * 1500
+      await new Promise(resolve => setTimeout(resolve, waitTime));
       i = (i + 1) % this.parsedAnimation.length
       this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
