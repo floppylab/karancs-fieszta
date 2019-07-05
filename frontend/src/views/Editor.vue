@@ -117,7 +117,7 @@
     methods: {
       addFrame() {
         this.frames.splice(this.current + 1, 0, {
-          time: 1000,
+          time: 0,
           animation: 'cut',
           // data: new Array(7).fill(new Array(8).fill(false))
           data: [
