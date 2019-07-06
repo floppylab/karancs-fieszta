@@ -20,7 +20,7 @@
                 <div class="input-row">
                     <p>
                         <label>hossz (ms) *</label>
-                        <input type="number" v-model="frames[current].time" step="500" min="0"/>
+                        <input type="number" v-model="frames[current].time" step="1000" min="5000"/>
                     </p>
                     <p>
                         <label>animáció *</label>
@@ -92,7 +92,7 @@
         id: null,
         title: '',
         frames: [{
-          time: 1000,
+          time: 5000,
           animation: 'bottomup',
           // data: new Array(7).fill(new Array(8).fill(false))
           data: [

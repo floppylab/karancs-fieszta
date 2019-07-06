@@ -21,9 +21,9 @@
                                 <font-awesome-icon icon="pencil-alt"/>
                             </router-link>
                         </p>
-                        <p @click="downloadAnimation(animation)" class="pointer-cursor like-a" title="letöltés gifként">
-                            <font-awesome-icon icon="download"/>
-                        </p>
+                        <!--<p @click="downloadAnimation(animation)" class="pointer-cursor like-a" title="letöltés gifként">-->
+                            <!--<font-awesome-icon icon="download"/>-->
+                        <!--</p>-->
                         <p @click="deleteAnimation(animation)" class="pointer-cursor like-a" v-if="owned(animation)" title="törlés">
                             <font-awesome-icon icon="trash-alt"/>
                         </p>

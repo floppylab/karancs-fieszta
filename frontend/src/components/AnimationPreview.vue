@@ -33,10 +33,11 @@ export default {
     totalTime () {
       let frameTimes = this.parsedAnimation.reduce((total, frame) => total + frame.time, 0)
       // console.log(frameTimes)
-      let animationTimes = [].concat.apply([], this.parsedAnimation[0].data).filter(v => v).length  * 1500
+      let animationTimes = [].concat.apply([], this.parsedAnimation[0].data).filter(v => v).length  * 4000
       for(let i = 1; i <this.parsedAnimation.length; i++) {
         let numberOfDiffs = this.diff(this.parsedAnimation[i-1], this.parsedAnimation[i])
-        animationTimes += numberOfDiffs * 1500
+        animationTimes += numberOfDiffs * 4000
+        if (this.parsedAnimation[i].time > 5000) animationTimes += 7*5000
       }
       // console.log(animationTimes)
       return frameTimes + animationTimes;
@@ -52,6 +53,7 @@ export default {
       }
       return count
     },
+    // not up to date
     downloadAnimation: async function () {
       console.log('called')
       console.log(this.totalTime / 500)
@@ -123,7 +125,7 @@ export default {
     while (true) {
       let frame = this.parsedAnimation[i]
       this.draw(frame)
-      let waitTime = frame.time + this.diff(this.previousFrame(i), frame) * 1500
+      let waitTime = frame.time + this.diff(this.previousFrame(i), frame) * 4000
       await new Promise(resolve => setTimeout(resolve, waitTime));
       i = (i + 1) % this.parsedAnimation.length
       this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
